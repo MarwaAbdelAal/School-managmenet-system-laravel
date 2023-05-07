@@ -17,7 +17,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('students', App\Http\Controllers\StudentController::class);
+Route::resource('students', App\Http\Controllers\StudentController::class)->middleware('auth');
 
 Route::fallback(function () {
     return '<h1>404 Not Found</h1>';

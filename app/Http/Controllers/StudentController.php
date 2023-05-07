@@ -16,9 +16,9 @@ class StudentController extends Controller
      */
     public function index()
     {
+        // return students of this track
+        // $all_students = Student::where('track_id', 1)->withTrashed()->get();
         $all_students = Student::all();
-        // $all_students = 
-        // $all_students = Auth::user()->students()->withTrashed()->get();
         return view('students.index', ['students' => $all_students]);
     }
 
@@ -35,7 +35,8 @@ class StudentController extends Controller
      */
     public function store(StudentRequest $request)
     {
-        $student = Student::create($request->all());
+        // $student = Student::create($request->all());
+        $student = $request->user()->students()->create($request->all());
         if($student->save()) {
             return redirect()->route('students.index')->with('success', 'Student created successfully.');
         }
@@ -53,19 +54,35 @@ class StudentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Student $student)
     {
-        $student = Student::find($id);
         return view('students.edit', ['student' => $student]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(StudentRequest $request, string $id)
+    public function update(Request $request, Student $student)
     {
-        $student = Student::find($id);
-        $student->update($request->all());
+        // compare current student with request
+        if ($student->IDno != $request->IDno) {
+            $request->validate([
+                'IDno' => 'required|unique:students,IDno,NULL,id,deleted_at,NULL|max:10',
+            ]);
+            $student->IDno = $request->IDno;
+        }
+        if ($student->name != $request->name) {
+            $request->validate([
+                'name' => 'required|max:20',
+            ]);
+            $student->name = $request->name;
+        }
+        if ($student->age != $request->age) {
+            $request->validate([
+                'age' => 'required',
+            ]);
+            $student->age = $request->age;
+        }
         if ($student->save()) {
             // $request->session()->flash('success', 'Student updated successfully.');
             return redirect()->route('students.index')->with('success', 'Student updated successfully.');
@@ -76,10 +93,9 @@ class StudentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        $student = Student::find($id);
-        if ($student->delete()) {
+        if (Student::destroy($id)) {
             return redirect()->route('students.index')->with('success', 'Student deleted successfully.');
         }
         return back()->with('error', 'Student not deleted.');

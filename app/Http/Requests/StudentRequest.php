@@ -21,8 +21,10 @@ class StudentRequest extends FormRequest
      */
     public function rules(): array
     {
+        // check unique if not soft deleted
+        // check methods for update and store
         return [
-            'IDno' => 'required|unique:students|max:10',
+            'IDno' => 'required|unique:students,IDno,NULL,id,deleted_at,NULL|max:10',
             'name' => 'required|max:20',
             'age' => 'required',
         ];

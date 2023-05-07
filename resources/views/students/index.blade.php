@@ -26,6 +26,7 @@
             <th scope="col">IDno</th>
             <th scope="col">Name</th>
             <th scope="col">Age</th>
+            <th scope="col">Track</th>
             <th scope="col">Edit</th>
             <th scope="col">Delete</th>
         </tr>
@@ -37,6 +38,7 @@
             <td>{{ $student->IDno }}</td>
             <td>{{ $student->name }}</td>
             <td>{{ $student->age }}</td>
+            <td>{{ $student->track->name }}</td>
             <td>
                 <a href="{{ route('students.edit', $student) }}" class="btn btn-outline-success border-0"><i class="fa-solid fa-pen-to-square"></i></a>
             </td>
