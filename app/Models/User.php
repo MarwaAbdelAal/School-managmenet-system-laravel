@@ -44,8 +44,7 @@ class User extends Authenticatable
 
     public function students()
     {
-        // return $this->hasMany(Student::class, 'IDno', 'IDno');
-        return $this->hasMany(Student::class, 'track_id');
+        return $this->hasMany(Student::class, 'user_id');
     }
 
 }

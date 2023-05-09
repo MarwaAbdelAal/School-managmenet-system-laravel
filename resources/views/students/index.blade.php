@@ -13,9 +13,11 @@
         <div class="col-8">
             <h1>Students</h1>
         </div>
+        @can('create', 'App\Models\Student')
         <div class="col-4">
             <a href="{{ route('students.create') }}" class="btn btn-primary">NEW</a>
         </div>
+        @endcan
     </div>
 </div>
 
@@ -39,9 +41,11 @@
             <td>{{ $student->name }}</td>
             <td>{{ $student->age }}</td>
             <td>{{ $student->track->name }}</td>
+            @can('update', $student)
             <td>
                 <a href="{{ route('students.edit', $student) }}" class="btn btn-outline-success border-0"><i class="fa-solid fa-pen-to-square"></i></a>
             </td>
+            @endcan
             <td>
                 <form action="{{ route('students.destroy', $student) }}" method="POST">
                     @csrf

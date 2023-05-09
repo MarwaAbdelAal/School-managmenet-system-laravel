@@ -27,6 +27,8 @@ class StudentController extends Controller
      */
     public function create()
     {
+        // authorize user
+        $this->authorize('create', Student::class);
         return view('students.create');
     }
 
@@ -35,8 +37,11 @@ class StudentController extends Controller
      */
     public function store(StudentRequest $request)
     {
+        if(Auth::user()->cannot('create', Student::class)) {
+            abort(403);
+        }
         // $student = Student::create($request->all());
-        $student = $request->user()->students()->create($request->all());
+        $student = $request->user()->students()->create(array_merge($request->all(), ['user_id' => 1, 'track_id' => 1]));
         if($student->save()) {
             return redirect()->route('students.index')->with('success', 'Student created successfully.');
         }
@@ -56,6 +61,8 @@ class StudentController extends Controller
      */
     public function edit(Student $student)
     {
+        // authorize user
+        $this->authorize('update', $student);
         return view('students.edit', ['student' => $student]);
     }
 
@@ -64,6 +71,11 @@ class StudentController extends Controller
      */
     public function update(Request $request, Student $student)
     {
+        // authorize user
+        if($request->user()->cannot('update', $student)) {
+            abort(403);
+            // return back()->with('error', 'You do not own this student.');
+        }
         // compare current student with request
         if ($student->IDno != $request->IDno) {
             $request->validate([
